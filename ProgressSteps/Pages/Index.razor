@@ -1,0 +1,65 @@
+﻿@page "/"
+
+<div class="container">
+    <div class="progress-container">
+        <div class="progress" id="progress" style="@barLength"></div>
+        <div class="circle @(ActiveIndex >= 1 ? "active" : "")">1</div>
+        <div class="circle @(ActiveIndex >= 2 ? "active" : "")">2</div>
+        <div class="circle @(ActiveIndex >= 3 ? "active" : "")">3</div>
+        <div class="circle @(ActiveIndex >= 4 ? "active" : "")">4</div>
+    </div>
+
+    <button class="btn" id="prev" disabled="@prevDisabled" @onclick="@Previous">Prev</button>
+    <button class="btn" id="next" disabled="@nextDisabled" @onclick="@Next">Next</button>
+</div>
+
+@code
+{
+    const int MaxIndex = 4;
+    private int ActiveIndex { get; set; } = 1;
+    private bool prevDisabled = true;
+    private bool nextDisabled = false;
+    private string barLength = "width:0%";
+
+    private void Previous()
+    {
+        ActiveIndex--;
+        if(ActiveIndex < 1)
+        {
+            ActiveIndex = 1;
+        }
+        UpdateBar();
+    }
+
+    private void Next()
+    {
+        ActiveIndex++;
+        if(ActiveIndex > MaxIndex)
+        {
+            ActiveIndex = MaxIndex;
+        }
+        UpdateBar();
+    }
+
+    private void UpdateBar()
+    {
+        //draw the active line
+        double calc = ((double)(ActiveIndex - 1) / (double)(MaxIndex - 1)) * 100;
+        barLength = $"width:{calc}%";
+
+        //handle buttons
+        if (ActiveIndex == 1)
+        {
+            prevDisabled = true;
+        }
+        else if(ActiveIndex == 4)
+        {
+            nextDisabled = true;
+        }
+        else
+        {
+            prevDisabled = false;
+            nextDisabled = false;
+        }
+    }
+}
